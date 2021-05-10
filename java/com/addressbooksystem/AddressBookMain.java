@@ -12,8 +12,17 @@ public class AddressBookMain {
         String personName=contactPerson.getFirstName()+" "+contactPerson.getLastName();
         if(name.equals(personName)) {
             contactPerson = AddressBookMain.addContactPersonDetails();
+            System.out.println("Contact Deatails of the person: "+name+" is edited");
         }
         return contactPerson;
+    }
+
+    public void deleteContactPersonDetailsByName(String name) {
+        String personName=contactPerson.getFirstName()+" "+contactPerson.getLastName();
+        if(name.equals(personName)) {
+            contactPerson=null;
+            System.out.println("Contact Deatails of the person: "+name+" is deleted");
+        }
     }
 
     public static ContactPerson addContactPersonDetails(){
@@ -51,5 +60,9 @@ public class AddressBookMain {
         Scanner sc=new Scanner(System.in);
         String name=sc.nextLine();
         System.out.println(addressBookMain.editContactPersonDetailsByName(name));
+
+        System.out.println("Name of Person whose details to be deleted:");
+        String deleteName=sc.nextLine();
+        addressBookMain.deleteContactPersonDetailsByName(deleteName);
     }
 }
