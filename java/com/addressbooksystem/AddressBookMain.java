@@ -3,25 +3,44 @@ import java.util.*;
 
 public class AddressBookMain {
     public ContactPerson contactPerson;
+    public List<ContactPerson> addressBook = new ArrayList<>();
+
+    public List<ContactPerson> getAddressBook() {
+        return addressBook;
+    }
+
+    public void addContactPersonDetails(ContactPerson contactPerson) {
+        addressBook.add(contactPerson);
+    }
 
     public void setContactPerson(ContactPerson contactPerson) {
         this.contactPerson = contactPerson;
     }
 
-    public ContactPerson editContactPersonDetailsByName(String name) {
-        String personName=contactPerson.getFirstName()+" "+contactPerson.getLastName();
-        if(name.equals(personName)) {
-            contactPerson = AddressBookMain.addContactPersonDetails();
-            System.out.println("Contact Deatails of the person: "+name+" is edited");
+    public void editContactPersonDetailsByName(String name) {
+        int count=0;
+        for(ContactPerson contactPerson: addressBook) {
+            String personName=contactPerson.getFirstName()+" "+contactPerson.getLastName();
+            if(name.equals(personName)) {
+                contactPerson = AddressBookMain.addContactPersonDetails();
+                addressBook.set(count,contactPerson);
+                System.out.println("Contact Deatails of the person: "+name+" is edited");
+                break;
+            }
+            count++;
         }
-        return contactPerson;
     }
 
     public void deleteContactPersonDetailsByName(String name) {
-        String personName=contactPerson.getFirstName()+" "+contactPerson.getLastName();
-        if(name.equals(personName)) {
-            contactPerson=null;
-            System.out.println("Contact Deatails of the person: "+name+" is deleted");
+        int count=0;
+        for(ContactPerson contactPerson: addressBook) {
+            String personName=contactPerson.getFirstName()+" "+contactPerson.getLastName();
+            if(name.equals(personName)) {
+                addressBook.remove(count);
+                System.out.println("Contact Details of the person: "+name+" is deleted");
+                break;
+            }
+            count++;
         }
     }
 
@@ -52,17 +71,37 @@ public class AddressBookMain {
     public static void main(String[] args) {
         System.out.println("Welcome to Address Book Program");
         AddressBookMain addressBookMain=new AddressBookMain();
-        ContactPerson contactPerson=AddressBookMain.addContactPersonDetails();
-        addressBookMain.setContactPerson(contactPerson);
-        System.out.println(contactPerson);
+
+        System.out.println("Number of Person's details to be added:");
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+
+        for(int i=0;i<n;i++) {
+            ContactPerson personDetails=addressBookMain.addContactPersonDetails();
+            addressBookMain.addContactPersonDetails(personDetails);
+        }
+
+        System.out.println("List of the person's details");
+        for(ContactPerson contactPerson: addressBookMain.getAddressBook()) {
+            System.out.println(contactPerson);
+        }
 
         System.out.println("Name of the person whose details to be edited");
-        Scanner sc=new Scanner(System.in);
+        sc.nextLine();
         String name=sc.nextLine();
-        System.out.println(addressBookMain.editContactPersonDetailsByName(name));
+        addressBookMain.editContactPersonDetailsByName(name);
+
+        for(ContactPerson contactPerson: addressBookMain.getAddressBook()) {
+            System.out.println(contactPerson);
+        }
 
         System.out.println("Name of Person whose details to be deleted:");
         String deleteName=sc.nextLine();
         addressBookMain.deleteContactPersonDetailsByName(deleteName);
+
+        System.out.println("Person's details after deletion:");
+        for(ContactPerson contactPerson: addressBookMain.getAddressBook()) {
+            System.out.println(contactPerson);
+        }
     }
 }
