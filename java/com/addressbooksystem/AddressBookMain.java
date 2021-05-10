@@ -2,21 +2,23 @@ package com.addressbooksystem;
 import java.util.*;
 
 public class AddressBookMain {
-    private List<ContactPerson> addressBook =new ArrayList<>();
-    private static Map<String, List<ContactPerson>> addressBookSystem = new TreeMap<>();
-    public List<ContactPerson> getAddressBook(){
+    private Set<ContactPerson> addressBook =new HashSet<>();
+    private static Map<String, Set<ContactPerson>> addressBookSystem = new TreeMap<>();
+
+    public Set<ContactPerson> getAddressBook(){
         return addressBook;
     }
 
     public void addContactPersonDetails(ContactPerson contactPerson) {
         addressBook.add(contactPerson);
     }
-    public static void addAddressBookToSystem(String addressBookName, List<ContactPerson> addressBook) {
+
+    public static void addAddressBookToSystem(String addressBookName, Set<ContactPerson> addressBook) {
         addressBookSystem.put(addressBookName, addressBook);
     }
 
     public static boolean isPresentAddressBook(String phoneBookName) {
-        for(Map.Entry<String, List<ContactPerson>> me : addressBookSystem.entrySet()) {
+        for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
             String phBookName= me.getKey();
             if(phBookName.equals(phoneBookName))
                 return true;
@@ -25,9 +27,9 @@ public class AddressBookMain {
     }
 
     public static boolean editContactPersonDetailsByName(String phoneBookName, String personName) {
-        for(Map.Entry<String, List<ContactPerson>> me : addressBookSystem.entrySet()) {
+        for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
             String phBookName= me.getKey();
-            List<ContactPerson> phoneBook=me.getValue();
+            Set<ContactPerson> phoneBook=me.getValue();
             if(phBookName.equals(phoneBookName)) {
                 for(ContactPerson contactPerson : phoneBook)
                 {
@@ -46,9 +48,9 @@ public class AddressBookMain {
     }
 
     public static boolean deleteContactPersonDetailsByName(String phoneBookName, String personName) {
-        for(Map.Entry<String, List<ContactPerson>> me : addressBookSystem.entrySet()) {
+        for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
             String phBookName= me.getKey();
-            List<ContactPerson> phoneBook=me.getValue();
+            Set<ContactPerson> phoneBook=me.getValue();
             if(phBookName.equals(phoneBookName)) {
                 for(ContactPerson contactPerson : phoneBook)
                 {
@@ -65,9 +67,9 @@ public class AddressBookMain {
     }
 
     public static void showAddressBook(String phoneBookName) {
-        for(Map.Entry<String, List<ContactPerson>> me : addressBookSystem.entrySet()) {
+        for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
             String phBookName= me.getKey();
-            List<ContactPerson> phoneBook=me.getValue();
+            Set<ContactPerson> phoneBook=me.getValue();
             if(phBookName.equals(phoneBookName)) {
                 if(phoneBook.size()==0) {
                     System.out.println("Sorry, there is no contact left in the "+phoneBookName+" after deletion.");
@@ -85,9 +87,9 @@ public class AddressBookMain {
     }
 
     public static void showAddressBookSystem() {
-        for(Map.Entry<String, List<ContactPerson>> me : addressBookSystem.entrySet()) {
+        for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
             String phoneBookName= me.getKey();
-            List<ContactPerson> phoneBook=me.getValue();
+            Set<ContactPerson> phoneBook=me.getValue();
             System.out.println("The contact details of the "+phoneBookName+":");
             if(phoneBook.size()==0) {
                 System.out.println("Sorry, there is no contact in the "+phoneBookName+".");
@@ -98,6 +100,36 @@ public class AddressBookMain {
                 }
             }
         }
+    }
+
+    public static Set<String> searchPersonByCity(String city) {
+        Set<String> personsInCity =new TreeSet<>();
+        for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
+            Set<ContactPerson> phoneBook=me.getValue();
+            for(ContactPerson contactPerson : phoneBook)
+            {
+                String name=contactPerson.getFirstName()+" "+contactPerson.getLastName();
+                String cityName=contactPerson.getCity();
+                if(cityName.equals(city))
+                    personsInCity.add(name);
+            }
+        }
+        return personsInCity;
+    }
+
+    public static Set<String> searchPersonByState(String state) {
+        Set<String> personsInState =new TreeSet<>();
+        for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
+            Set<ContactPerson> phoneBook=me.getValue();
+            for(ContactPerson contactPerson : phoneBook)
+            {
+                String name=contactPerson.getFirstName()+" "+contactPerson.getLastName();
+                String stateName=contactPerson.getState();
+                if(stateName.equals(state))
+                    personsInState.add(name);
+            }
+        }
+        return personsInState;
     }
 
     public static ContactPerson addContactPersonDetails(){
@@ -123,6 +155,7 @@ public class AddressBookMain {
         ContactPerson personDetails=new ContactPerson(firstName,lastName,address,city,state,zip,phoneNo,emailId);
         return personDetails;
     }
+
     public static void main(String[] args) {
         System.out.println("Welcome to Address Book Program");
 
@@ -146,7 +179,7 @@ public class AddressBookMain {
                 addressBookMain.addContactPersonDetails(personDetails);
             }
 
-            List<ContactPerson> addressBook = addressBookMain.getAddressBook();
+            Set<ContactPerson> addressBook = addressBookMain.getAddressBook();
             addAddressBookToSystem(addressBookName,addressBook);
         }
 
@@ -197,5 +230,27 @@ public class AddressBookMain {
         }
         else
             System.out.println("Sorry, the "+bookName1+" is not found in the system. We can't proceed to delete.");
+
+        System.out.println("Enter the city name to search:");
+        String cityName=sc.nextLine();
+        Set<String> personsInCity = searchPersonByCity(cityName);
+        if(personsInCity.size()==0)
+            System.out.println("Sorry, there is no person in the "+cityName+".");
+        else {
+            System.out.println("The list of persons in the "+cityName+":");
+            for(String name : personsInCity)
+                System.out.println(name);
+        }
+
+        System.out.println("Enter the state name to search:");
+        String stateName=sc.nextLine();
+        Set<String> personsInState = searchPersonByState(stateName);
+        if(personsInState.size()==0)
+            System.out.println("Sorry, there is no person in the "+stateName+".");
+        else {
+            System.out.println("The list of persons in the "+stateName+":");
+            for(String name : personsInState)
+                System.out.println(name);
+        }
     }
 }

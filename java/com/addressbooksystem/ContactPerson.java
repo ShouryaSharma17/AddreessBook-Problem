@@ -57,9 +57,14 @@ public class ContactPerson {
             return true;
         return false;
     }
-        @Override
-        public String toString() {
-            return "firstName=" + firstName + ", lastName=" + lastName + ", address=" + address + ", city="
+    @Override
+    public int hashCode() {
+        return 10;
+    }
+
+    @Override
+    public String toString() {
+        return "firstName=" + firstName + ", lastName=" + lastName + ", address=" + address + ", city="
                     + city + ", state=" + state + ", zip=" + zip + ", phoneNo=" + phoneNo + ", emailId=" + emailId;
         }
     }
