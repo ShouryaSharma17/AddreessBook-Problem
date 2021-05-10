@@ -8,15 +8,14 @@ public class AddressBookMain {
     public Set<ContactPerson> getAddressBook(){
         return addressBook;
     }
-
+    // Method to add contact
     public void addContactPersonDetails(ContactPerson contactPerson) {
         addressBook.add(contactPerson);
     }
-
+    // Method to add address book
     public static void addAddressBookToSystem(String addressBookName, Set<ContactPerson> addressBook) {
         addressBookSystem.put(addressBookName, addressBook);
     }
-
     public static boolean isPresentAddressBook(String phoneBookName) {
         for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
             String phBookName= me.getKey();
@@ -25,7 +24,7 @@ public class AddressBookMain {
         }
         return false;
     }
-
+    // Method to edit contact
     public static boolean editContactPersonDetailsByName(String phoneBookName, String personName) {
         for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
             String phBookName= me.getKey();
@@ -46,7 +45,7 @@ public class AddressBookMain {
         }
         return false;
     }
-
+    // Method to delete contact
     public static boolean deleteContactPersonDetailsByName(String phoneBookName, String personName) {
         for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
             String phBookName= me.getKey();
@@ -101,7 +100,7 @@ public class AddressBookMain {
             }
         }
     }
-
+    // Search person by city
     public static Set<String> searchPersonByCity(String city) {
         Set<String> personsInCity =new TreeSet<>();
         for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
@@ -116,7 +115,7 @@ public class AddressBookMain {
         }
         return personsInCity;
     }
-
+    // Search person by state
     public static Set<String> searchPersonByState(String state) {
         Set<String> personsInState =new TreeSet<>();
         for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
@@ -130,6 +129,24 @@ public class AddressBookMain {
             }
         }
         return personsInState;
+    }
+    // View person by city or state
+    public static Map<String,List<String>> viewPersonByCityOrState(String cityOrState) {
+        List<String> personsInCityOrState =new ArrayList<>();
+        Map<String,List<String>> personCityStateMap =new HashMap<>();
+        for(Map.Entry<String, Set<ContactPerson>> me : addressBookSystem.entrySet()) {
+            Set<ContactPerson> phoneBook=me.getValue();
+            for(ContactPerson contactPerson : phoneBook)
+            {
+                String personName=contactPerson.getFirstName()+" "+contactPerson.getLastName();
+                String cityName=contactPerson.getCity();
+                String stateName=contactPerson.getState();
+                if(cityName.equals(cityOrState) || stateName.equals(cityOrState))
+                    personsInCityOrState.add(personName);
+            }
+        }
+        personCityStateMap.put(cityOrState,personsInCityOrState);
+        return personCityStateMap;
     }
 
     public static ContactPerson addContactPersonDetails(){
@@ -251,6 +268,15 @@ public class AddressBookMain {
             System.out.println("The list of persons in the "+stateName+":");
             for(String name : personsInState)
                 System.out.println(name);
+        }
+        System.out.println("Enter the state/city name to view the persons:");
+        String cityStateName = sc.nextLine();
+        Map<String,List<String>> personCityStateMap = viewPersonByCityOrState(cityStateName);
+        if(personCityStateMap.size()==0)
+            System.out.println("Sorry, there is no person in the "+cityStateName+".");
+        else {
+            System.out.println("The list of persons in the "+cityStateName+":");
+            System.out.println(personCityStateMap);
         }
     }
 }
